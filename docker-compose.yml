@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  api:
+    # image: "greetings-api:0.1.1"
+    build: .
+    container_name: greetings-api
+    environment:
+      DB_HOST: mariadb
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+    restart: always
+    depends_on:
+      - mariadb
+    ports:
+      - '8000:80'
+    links:
+      - mariadb
+  mariadb:
+    image: "mariadb:10.5.10-focal"
+    volumes: 
+      - /var/lib/mysql/data:${MARIADB_DATA_DIR}
+      - /var/lib/mysql/logs:${MARIADB_LOG_DIR}
+      - /var/docker/mariadb/conf:${MARIADB_CONF_DIR}
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
